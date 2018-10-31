@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="scripts/semantic-ui-css/semantic.min.css">
+    <title>SimpleWebRTC Video Chat</title>
+    <style>
+      html { margin-top: 20px; }
+      #chat-content { height: 180px; overflow-y: scroll; }
+    </style>
+  </head>
+  <body>
+    <!-- Main Content -->
+    <div class="ui container">
+      <h1 class="ui header">SimpleWebRTC Messenger</h1>
+      <hr>
+      <div class="ui two column stackable grid">
+        <!-- Chat Section -->
+        <div class="ui ten wide column">
+          <div class="ui segment">
+            <!-- Chat Room Form -->
+            <div class="ui form">
+              <div class="fields">
+                <div class="field">
+                  <label>User Name</label>
+                  <input type="text" placeholder="Enter user name" id="username" name="username">
+                </div>
+                <div class="field">
+                  <label>Room</label>
+                  <input type="text" placeholder="Enter room name" id="roomName" name="roomName">
+                </div>
+              </div>
+
+              <br>
+              <div class="ui buttons">
+                <div id="create-btn" class="ui submit orange button">Create Room</div>
+                <div class="or"></div>
+                <div id="join-btn" class="ui submit green button">Join Room</div>
+              </div>
+            </div>
+
+            <!-- Chat Room Messages -->
+            <div id="chat"></div>
+          </div>
+        </div>
+        <!-- End of Chat Section -->
+
+        Local Camera
+
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="scripts/jquery/dist/jquery.min.js"></script>
+    <script src="scripts/semantic-ui-css/semantic.min.js"></script>
+    <script src="scripts/handlebars/dist/handlebars.min.js"></script>
+    <script src="scripts/simplewebrtc/out/simplewebrtc-with-adapter.bundle.js"></script>
+    <script src="js/app.js"></script>
+
+  </body>
+</html>
