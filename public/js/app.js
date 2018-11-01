@@ -114,6 +114,20 @@ window.addEventListener('load', () => {
     }
   })
 
+  //add remote video
+  webrtc.on('videoAdded', (video, peer) => {
+    const id = webrtc.getDomId(peer);
+    const html = remoteVideoTemplate({ id });
+    if (remoteVideosCount === 0) {
+      remoteVideosEl.html(html);
+    } else {
+      remoteVideosEl.append(html);
+    }
+    $(`#${id}`).html(video);
+    $(`#${id} video`).addClass('ui image medium');
+    remoteVideosCount += 1;
+  })
+
   $('.submit').on('click', (event) => {
     if (!formEl.form('is valid')) {
       return false;
