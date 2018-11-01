@@ -21,7 +21,7 @@ window.addEventListener('load', () => {
     fields: {
       roomName: 'empty',
       username: 'empty',
-    }
+    },
   });
 
   //create our WebRTC connection
@@ -38,6 +38,80 @@ window.addEventListener('load', () => {
   webrtc.on('localStream', () => {
     localImageEl.hide();
     localVideoEl.show();
+  });
+
+  const updateChatMessages = () => {
+    const html = chatContentTemplate({ messages });
+    const chatContentEl = $('#chat-content');
+    chatContentEl.html(html)
+    const scrollHeight = chatContentEl.prop('scrollHeight')
+    chatContentEl.animate({ scrollTop: scrollHeight }, 'slow');
+  };
+
+  //post local message
+  const postMessage = (message) => {
+    const chatMessage = {
+      username,
+      message,
+      postedOn: new Date().toLocaleString('en-US')
+    };
+
+    //send to all users
+    webrtc.sendToAll('chat', chatMessage);
+    'chat'
+    messages.push(chatMessage);
+    $('#post-message').val('');
+    updateChatMessages();
+  };
+
+  //display chat interface
+  const showChatRoom = (room) => {
+    //hide formEl
+    formEl.hide();
+    const html = chatTemplate({ room });
+    chatEl.html(html);
+    const postForm = $('form');
+    postForm.form({
+      message: 'empty',
+    });
+    $('#post-btn').on('click', () => {
+      const message = $('#post-message').val();
+      postMessage(message);
+    });
+    $('#post-message').on('keyup', (event) => {
+      if (event.keyCode === 13) {
+        const message = $('#post-message').val();
+        postMessage(message);
+      }
+    })
+  };
+
+
+  //register new chat room
+  const createRoom = (roomName) => {
+    console.info(`Creating new room: ${roomName}`);
+    webrtc.createRoom(roomName, (err, name) => {
+      formEl.form('clear');
+      showChatRoom(name);
+      postMessage(`${username} created chatroom`);
+    });
+  };
+
+  //join existing chatroom
+  const joinRoom = (roomName) => {
+    console.log(`Joining Room: ${roomName}`);
+    webrtc.joinRoom(roomName);
+    showChatRoom(roomName);
+    postMessage(`${username} joined chatroom`)
+  };
+
+  //receive messages from remote user
+  webrtc.connection.on('message', (data) => {
+    if (data.type === 'chat') {
+      const message = data.payload;
+      messages.push(message)
+      updateChatMessages();
+    }
   })
 
   $('.submit').on('click', (event) => {
@@ -53,73 +127,5 @@ window.addEventListener('load', () => {
     }
     return false;
   });
-
-  //register new chat room
-  const createRoom = (roomName) => {
-    console.info(`Creating new room: ${roomName}`);
-    webrtc.createRoom(roomName, (err, name) => {
-      formEl.form('clear');
-      showChatRoom(name);
-      postMessage(`${username} created chatroom`);
-    })
-  };
-
-  //join existing chatroom
-  const joinRoom = (roomName) => {
-    console.log(`Joining Room: ${roomName}`);
-    webrtc.joinRoom(roomName);
-    showChatRoom(roomName);
-    postMessage(`${username} joined chatroom`)
-  };
-
-  //post local message
-  const postMessage = (message) => {
-    const chatMessage = {
-      username,
-      message,
-      postedOn: new Date().toLocaleString('en-US')
-    };
-
-    //send to all users
-    webrtc.sendToAll('chat', chatMessage);
-    messages.push(chatMessage);
-    $('#post-message').val('');
-    updateChatMessages();
-  }
-
-  //display chat interface
-  const showChatRoom = (room) => {
-    //hide formEl
-    formEl.hide();
-    const html = chatTemplate({ room });
-    chatEl.html(html);
-    const postForm = $('form');
-    postForm.form({
-      message: 'empty',
-    });
-    $('#post-btn').on('keyup', (event) => {
-      if (event.keyCode === 13) {
-        const message = $('#post-message').val();
-        postMessage(message);
-      }
-    });
-  };
-
-  const updateChatMessages = () => {
-    const html = chatContentTemplate({ messages });
-    const chatContentEl = $('#chat-content');
-    chatContentEl.html(html)
-    const scrollHeight = chatContentEl.prop('scrollHeight')
-    chatContentEl.animate({ scrollTop: scrollHeight }, 'slow');
-  };
-
-  //receive messages from remote user
-  webrtc.connection.on('message', (data) => {
-    if (data.type === 'chat') {
-      const message = data.payload;
-      messages.push(message)
-      updateChatMessages();
-    }
-  })
 
 });
