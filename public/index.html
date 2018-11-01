@@ -77,6 +77,8 @@
     <script id="chat-template" type="text/x-handlebars-template">
       <h3 class="ui orange header">Room ID -> <strong>{{ room }}</strong></h3>
       <hr>
+      <div id="chat-content" class="ui feed"></div>
+      <hr>
       <div class="ui form">
         <div class="ui field">
           <label>Post Message</label>
@@ -88,14 +90,14 @@
 
     <!-- Chat Content Template -->
     <script id="chat-content-template" type="text/x-handlebars-template">
-      {{ #each messages}}
+      {{#each messages}}
       <div class="event">
         <div class="label">
           <i class="icon blue user"></i>
         </div>
         <div class="content">
           <div class="summary">
-            <a href="a"> {{ username }}</a> posted on
+            <a href="#"> {{ username }}</a> posted on
             <div class="date">
               {{ postedOn }}
             </div>
@@ -105,6 +107,7 @@
           </div>
         </div>
       </div>
+      {{ each }}
     </script>
 
     <!-- Remote Video Template -->
